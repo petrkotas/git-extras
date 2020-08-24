@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Shortcut to save eveything in working directory as WIP commit.
+# There can be only one WIP commit. When calling git wip multiple times,
+# it add the stuff to existing WIP commit.
+# WIP commit can be undone with git undo -s or git reset --soft HEAD^
+
+# get the title of last commit
+last_commit=$(git log --oneline HEAD^..HEAD)
+IFS=' '
+read -ra commit_data <<< "$last_commit"
+last_commit_message=$
+
+if [[ "$last_commit_message"=="WIP" ]]; then
+    # previous WIP exists, reset and add changes
+    git reset --soft HEAD^
+fi
+
+git add --all
+git commit --all -s -m "WIP"
